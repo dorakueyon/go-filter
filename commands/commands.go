@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"io/ioutil"
 	"path/filepath"
 )
 
@@ -11,12 +12,12 @@ func newConfig() (config, error) {
 		filterConfig{
 			filterType: allReplace,
 			from:       "#",
-			to:         "yooooooooooooooooo",
+			to:         "##",
 		},
 		filterConfig{
 			filterType: prefixReplace,
 			from:       "#",
-			to:         "to",
+			to:         "**",
 		},
 	}
 
