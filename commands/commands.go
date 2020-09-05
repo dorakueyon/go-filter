@@ -4,21 +4,35 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 )
 
-func newConfig() (config, error) {
-	fltCfgs := []filterConfig{
+func loadFilterConfig() (config, error) {
+	fltCfgCsvFilePath := "./config.csv"
+	csvLines, err := readCfgCsv(fltCfgCsvFilePath)
+	if err != nil {
+		return config{}, err
+	}
+	var fltCfgs []filterConfig
+	for _, row := range csvLines {
+		var fltCfg filterConfig
+		if strings.HasPrefix(row[0], "//") {
+			continue
+		}
 
-		filterConfig{
-			filterType: allReplace,
-			from:       "#",
-			to:         "##",
-		},
-		filterConfig{
-			filterType: prefixReplace,
-			from:       "#",
-			to:         "**",
-		},
+		switch row[0] {
+		case "allReplace":
+			fltCfg.filterType = ALLREPLACE
+			fltCfg.from = row[1]
+			fltCfg.to = row[2]
+		case "prefixReplace":
+			fltCfg.filterType = PREFIXREPLACE
+			fltCfg.from = row[1]
+			fltCfg.to = row[2]
+		default:
+			continue
+		}
+		fltCfgs = append(fltCfgs, fltCfg)
 	}
 
 	return config{
@@ -28,7 +42,7 @@ func newConfig() (config, error) {
 
 // NewApp is ...
 func NewApp() (*App, error) {
-	cfg, err := newConfig()
+	cfg, err := loadFilterConfig()
 	if err != nil {
 		return nil, err
 	}
@@ -45,14 +59,14 @@ func (app *App) execute() error {
 		processFile.bufLines = rowLines
 		for _, filterCfg := range app.config.filterConfigs {
 			switch filterCfg.filterType {
-			case allReplace:
+			case ALLREPLACE:
 				from := filterCfg.from
 				to := filterCfg.to
 				newLines := filterReplaceStrings(processFile.bufLines, from, to)
 				processFile.bufLines = newLines
 				processFile.newLines = newLines
 
-			case prefixReplace:
+			case PREFIXREPLACE:
 				from := filterCfg.from
 				to := filterCfg.to
 				newLines := filterReplacePrefixString(processFile.bufLines, from, to)
@@ -69,7 +83,23 @@ func (app *App) execute() error {
 	return nil
 }
 
+func (fcf *filterConfig) displayFilterType() string {
+	switch fcf.filterType {
+	case ALLREPLACE:
+		return "allDisplay"
+	case PREFIXREPLACE:
+		return "prefixDisplay"
+	default:
+		return "not defined"
+	}
+}
+
 func (app *App) debug() {
+
+	for _, fltCfg := range app.config.filterConfigs {
+		fmt.Printf("type=%s, from=%s, to=%s\n", fltCfg.displayFilterType(), fltCfg.from, fltCfg.to)
+	}
+
 	for _, processFile := range app.processFiles {
 		fmt.Printf("FILENAME:%s\n", processFile.filename)
 		fmt.Println("===============")

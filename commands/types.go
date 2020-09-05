@@ -21,8 +21,8 @@ type filterType int
 
 const (
 	_ filterType = iota
-	allReplace
-	prefixReplace
+	ALLREPLACE
+	PREFIXREPLACE
 )
 
 type filterConfig struct {

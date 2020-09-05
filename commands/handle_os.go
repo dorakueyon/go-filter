@@ -2,6 +2,7 @@ package commands
 
 import (
 	"bufio"
+	"encoding/csv"
 	"fmt"
 	"os"
 )
@@ -42,4 +43,24 @@ func createFile(filename string, lines []string) error {
 	}
 
 	return nil
+}
+
+func readCfgCsv(filePath string) ([][]string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	var lines [][]string
+
+	for {
+		row, err := reader.Read()
+		if err != nil {
+			break
+		}
+		lines = append(lines, row)
+	}
+	return lines, nil
 }
