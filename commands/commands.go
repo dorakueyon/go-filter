@@ -93,20 +93,39 @@ func (app *App) createOutputFiles() {
 
 }
 
+func (app *App) getFileNames(dirName string) error {
+	files, err := ioutil.ReadDir(dirName)
+	if err != nil {
+		return err
+	}
+	var processFiles []processFile
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+
+		processFiles = append(processFiles, processFile{
+			filename: filepath.Join(dirName, file.Name()),
+		})
+	}
+	app.processFiles = processFiles
+	return nil
+}
+
 // Run is ...
 func (app *App) Run(debug bool) error {
-	filename := "./input/hoge.md"
-	processFile := processFile{
-		filename: filename,
+	dirName := "./input"
+	err := app.getFileNames(dirName)
+	if err != nil {
+		return err
 	}
-	app.processFiles = append(app.processFiles, processFile)
-
-	err := app.execute()
+	err = app.execute()
 	if err != nil {
 		return err
 	}
 	app.debug()
-	app.createOutputFiles()
+
+	//app.createOutputFiles()
 
 	return nil
 }
