@@ -70,12 +70,12 @@ func (app *App) execute() error {
 
 func (app *App) debug() {
 	for _, processFile := range app.processFiles {
-		fmt.Printf("filename:%s\n", processFile.filename)
-		fmt.Println("===")
+		fmt.Printf("FILENAME:%s\n", processFile.filename)
+		fmt.Println("===============")
 		for _, line := range processFile.newLines {
 			fmt.Println(line)
 		}
-		fmt.Println("===")
+		fmt.Println("===============")
 	}
 
 }
