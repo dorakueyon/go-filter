@@ -35,7 +35,6 @@ func createFile(filename string, lines []string) error {
 	}
 
 	for _, line := range lines {
-		//b := []byte(line)
 		_, err := fp.WriteString(line + "\n")
 		if err != nil {
 			return err

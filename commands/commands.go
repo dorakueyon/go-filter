@@ -111,7 +111,7 @@ func (app *App) debug() {
 
 }
 
-func (app *App) createOutputFiles() {
+func (app *App) createOutputFiles(dirName string) {
 	for _, processFile := range app.processFiles {
 
 		name := filepath.Join(dirName, filepath.Base(processFile.filename))
@@ -144,7 +144,7 @@ func (app *App) getFileNames(dirName string) error {
 }
 
 // Run is ...
-func (app *App) Run(debug bool) error {
+func (app *App) Run(debug, createOutputFile bool) error {
 	inputDirName := "input"
 	outputDirName := "output"
 	err := app.getFileNames(inputDirName)
@@ -155,10 +155,12 @@ func (app *App) Run(debug bool) error {
 	if err != nil {
 		return err
 	}
-	app.debug()
-
-	//app.createOutputFiles()
+	if debug {
+		app.debug()
+	}
+	if createOutputFile {
 		app.createOutputFiles(outputDirName)
+	}
 
 	return nil
 }
