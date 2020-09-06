@@ -1,6 +1,5 @@
 filter_type,from,to,comment
-allReplace,#,##, hogehoge
-prefixReplace,#,##, hogehoge
-//allReplace,fe,FE, hoefeaf
-
-
+allReplace,#,##,hogehoge
+prefixReplace,#,##,hogehoge
+//allReplace,fe,FE,commenthogehoge
+allRegexReplace,a([a-z]+)e,apple,

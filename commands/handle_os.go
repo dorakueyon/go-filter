@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/csv"
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -62,7 +63,10 @@ func readCfgCsv(filePath string) ([][]string, error) {
 	for {
 		row, err := reader.Read()
 		if err != nil {
-			break
+			if err.Error() == "EOF" {
+				break
+			}
+			log.Fatalf("failed to read csv. error:%r", err)
 		}
 		lines = append(lines, row)
 	}

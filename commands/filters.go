@@ -1,6 +1,9 @@
 package commands
 
-import "strings"
+import (
+	"regexp"
+	"strings"
+)
 
 func filterReplaceStrings(lines []string, old, new string) []string {
 	var newLines []string
@@ -37,6 +40,17 @@ func filterLintList(lines []string) []string {
 			}
 		}
 		newLines = append(newLines, line)
+	}
+	return newLines
+}
+
+func filterAllRegexReplace(lines []string, regexPattern *regexp.Regexp, to string) []string {
+	var newLines []string
+
+	for _, line := range lines {
+		newLine := regexPattern.ReplaceAllString(line, to)
+		newLines = append(newLines, newLine)
+
 	}
 	return newLines
 }

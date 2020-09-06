@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -29,6 +30,12 @@ func loadFilterConfig() (config, error) {
 		case "prefixReplace":
 			fltCfg.filterType = PREFIXREPLACE
 			fltCfg.from = row[1]
+			fltCfg.to = row[2]
+		case "allRegexReplace":
+			fltCfg.filterType = ALLREGEXREPLACE
+			patternStr := row[1]
+			var wordReg = regexp.MustCompile(patternStr)
+			fltCfg.regexPattern = wordReg
 			fltCfg.to = row[2]
 		default:
 			continue
@@ -89,6 +96,13 @@ func (app *App) execute() error {
 				processFile.bufLines = newLines
 				processFile.newLines = newLines
 
+			case ALLREGEXREPLACE:
+				regexPattern := filterCfg.regexPattern
+				to := filterCfg.to
+				newLines := filterAllRegexReplace(processFile.bufLines, regexPattern, to)
+				processFile.bufLines = newLines
+				processFile.newLines = newLines
+
 			default:
 				fmt.Println("default")
 			}
@@ -105,6 +119,8 @@ func (fcf *filterConfig) displayFilterType() string {
 		return "allDisplay"
 	case PREFIXREPLACE:
 		return "prefixDisplay"
+	case ALLREGEXREPLACE:
+		return "allRegexReplace"
 	default:
 		return "not defined"
 	}
@@ -113,7 +129,12 @@ func (fcf *filterConfig) displayFilterType() string {
 func (app *App) debug() {
 
 	for _, fltCfg := range app.config.filterConfigs {
-		fmt.Printf("type=%s, from=%s, to=%s\n", fltCfg.displayFilterType(), fltCfg.from, fltCfg.to)
+		fmt.Printf("type=%s, from=%s, to=%s, regexPattern=%s\n",
+			fltCfg.displayFilterType(),
+			fltCfg.from,
+			fltCfg.to,
+			fltCfg.regexPattern,
+		)
 	}
 
 	for _, processFile := range app.processFiles {

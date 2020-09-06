@@ -1,5 +1,7 @@
 package commands
 
+import "regexp"
+
 // App is ...
 type App struct {
 	config       config
@@ -24,12 +26,14 @@ const (
 	_ filterType = iota
 	ALLREPLACE
 	PREFIXREPLACE
+	ALLREGEXREPLACE
 )
 
 type filterConfig struct {
-	filterType filterType
-	from       string
-	to         string
+	filterType   filterType
+	from         string
+	to           string
+	regexPattern *regexp.Regexp
 }
 
 type flags struct {
