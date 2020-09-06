@@ -43,13 +43,11 @@ func loadFilterConfig() (config, error) {
 
 func parseFlags() (flags, error) {
 	var (
-		debug   = flag.Bool("d", false, "debug mode")
-		version = flag.Bool("v", false, "show app version")
+		debug = flag.Bool("d", false, "debug mode")
 	)
 	flag.Parse()
 	return flags{
-		debug:   *debug,
-		version: *version,
+		debug: *debug,
 	}, nil
 }
 
