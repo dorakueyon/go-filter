@@ -1,3 +1,6 @@
+run:
+	go run ./main.go -d
+
 linux:
 	GOOS=linux GOARCH=amd64 go build -o linux-amd64/mdfilter ./main.go 
 win:
