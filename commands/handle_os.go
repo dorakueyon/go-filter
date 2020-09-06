@@ -52,8 +52,13 @@ func readCfgCsv(filePath string) ([][]string, error) {
 	defer file.Close()
 
 	reader := csv.NewReader(file)
-	var lines [][]string
 
+	// skip header row
+	if _, err := reader.Read(); err != nil {
+		return nil, err
+	}
+
+	var lines [][]string
 	for {
 		row, err := reader.Read()
 		if err != nil {

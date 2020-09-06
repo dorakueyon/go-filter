@@ -1,4 +1,6 @@
+filter_type,from,to,comment
 allReplace,#,##, hogehoge
+prefixReplace,#,##, hogehoge
 //allReplace,fe,FE, hoefeaf
 
 
