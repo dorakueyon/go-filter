@@ -7,14 +7,12 @@ import (
 )
 
 func main() {
-	debug := true
-	createOutputFile := true
 	app, err := commands.NewApp()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = app.Run(debug, createOutputFile)
+	err = app.Run()
 	if err != nil {
 		log.Fatal(err)
 	}

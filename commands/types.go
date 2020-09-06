@@ -3,6 +3,7 @@ package commands
 // App is ...
 type App struct {
 	config       config
+	flags        flags
 	processFiles []processFile
 }
 
@@ -29,4 +30,8 @@ type filterConfig struct {
 	filterType filterType
 	from       string
 	to         string
+}
+
+type flags struct {
+	debug bool
 }

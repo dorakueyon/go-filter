@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
@@ -40,13 +41,30 @@ func loadFilterConfig() (config, error) {
 	}, nil
 }
 
+func parseFlags() (flags, error) {
+	var (
+		debug   = flag.Bool("d", false, "debug mode")
+		version = flag.Bool("v", false, "show app version")
+	)
+	flag.Parse()
+	return flags{
+		debug:   *debug,
+		version: *version,
+	}, nil
+}
+
 // NewApp is ...
 func NewApp() (*App, error) {
 	cfg, err := loadFilterConfig()
 	if err != nil {
 		return nil, err
 	}
-	return &App{config: cfg}, nil
+	flgs, err := parseFlags()
+	if err != nil {
+		return nil, err
+	}
+
+	return &App{config: cfg, flags: flgs}, nil
 }
 
 func (app *App) execute() error {
@@ -144,7 +162,7 @@ func (app *App) getFileNames(dirName string) error {
 }
 
 // Run is ...
-func (app *App) Run(debug, createOutputFile bool) error {
+func (app *App) Run() error {
 	inputDirName := "input"
 	outputDirName := "output"
 	err := app.getFileNames(inputDirName)
@@ -155,10 +173,9 @@ func (app *App) Run(debug, createOutputFile bool) error {
 	if err != nil {
 		return err
 	}
-	if debug {
+	if app.flags.debug {
 		app.debug()
-	}
-	if createOutputFile {
+	} else {
 		app.createOutputFiles(outputDirName)
 	}
 
