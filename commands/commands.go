@@ -8,7 +8,7 @@ import (
 )
 
 func loadFilterConfig() (config, error) {
-	fltCfgCsvFilePath := "./config.csv"
+	fltCfgCsvFilePath := "config.csv"
 	csvLines, err := readCfgCsv(fltCfgCsvFilePath)
 	if err != nil {
 		return config{}, err
@@ -114,9 +114,9 @@ func (app *App) debug() {
 func (app *App) createOutputFiles() {
 	for _, processFile := range app.processFiles {
 
-		outFileName := fmt.Sprintf("./output/%s", filepath.Base(processFile.filename))
+		name := filepath.Join(dirName, filepath.Base(processFile.filename))
 		createFile(
-			outFileName,
+			name,
 			processFile.newLines,
 		)
 
@@ -145,8 +145,9 @@ func (app *App) getFileNames(dirName string) error {
 
 // Run is ...
 func (app *App) Run(debug bool) error {
-	dirName := "./input"
-	err := app.getFileNames(dirName)
+	inputDirName := "input"
+	outputDirName := "output"
+	err := app.getFileNames(inputDirName)
 	if err != nil {
 		return err
 	}
@@ -157,6 +158,7 @@ func (app *App) Run(debug bool) error {
 	app.debug()
 
 	//app.createOutputFiles()
+		app.createOutputFiles(outputDirName)
 
 	return nil
 }
